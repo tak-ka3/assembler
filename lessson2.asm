@@ -1,7 +1,7 @@
-addi r1, r0, 1 // 000001_00000_00001_0000000000000001_
-addi r2, r1, 1 //000001_00001_00010_0000000000000001_
-addi r6, r0, 6
-label1:     addi r7, r4, r6
-label5:     addi r8, r4, r1
-bne r9, r10 label1
-beq r11, r12 label5
+addi r1, r0, 20
+addi r2, r0, 0
+addi r3, r0, 0
+label: addi r2, r2, 1
+add r3, r2, r3
+blt r2, r1, label
+end: j end
