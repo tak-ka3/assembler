@@ -3,14 +3,8 @@ module fetch (pc, ins);
    output [31:0] ins;
    reg [31:0] 	 ins_mem[0:255];
    assign ins = ins_mem[pc];
-   initial  // ******** 追加行 ********
-     $readmemb("3-5-all_plus.bnr", ins_mem);// ******** 追加行 ********
-    //  initial begin
-    //      ins_mem[0] = 00000100000000010000000000000001;
-    //      ins_mem[1] = 00000100000000100000000000000001;
-    //      ins_mem[2] = 00000100010000100000000000000001;
-    //      ins_mem[3] = 00000100010000110000000000000100;
-    //  end
+   initial
+     $readmemb("3-5-all_plus.bnr", ins_mem);
 endmodule
 
 module execute (clk, ins, pc, reg1, reg2, wra, result, nextpc);
@@ -29,13 +23,13 @@ module execute (clk, ins, pc, reg1, reg2, wra, result, nextpc);
       input [5:0] op;
       input [4:0] operation;
       case (op)
-	6'd0: opr_gen = operation;
-	6'd1: opr_gen = 5'd0;
-	6'd4: opr_gen = 5'd8;
-	6'd5: opr_gen = 5'd9;
-	6'd6: opr_gen = 5'd10;
-    6'd36:opr_gen = 5'd23; //ここ
-	default: opr_gen = 5'h1f;
+         6'd0: opr_gen = operation;
+         6'd1: opr_gen = 5'd0;
+         6'd4: opr_gen = 5'd8;
+         6'd5: opr_gen = 5'd9;
+         6'd6: opr_gen = 5'd10;
+         6'd36:opr_gen = 5'd23; //ここ
+         default: opr_gen = 5'h1f;
       endcase
    endfunction
 
@@ -43,31 +37,31 @@ module execute (clk, ins, pc, reg1, reg2, wra, result, nextpc);
       input [4:0] opr, shift;
       input [31:0] operand1, operand2;
       case (opr)
-	5'd0: alu = operand1 + operand2;
-	5'd1: alu = operand1 - operand2;
-	5'd8: alu = operand1 & operand2;
-	5'd9: alu = operand1 | operand2;
-	5'd10: alu = operand1 ^ operand2;
-	5'd11: alu = ~ (operand1 & operand2);
-	5'd16: alu = operand1 << shift;
-	5'd17: alu = operand1 >> shift;
-	5'd18: alu = operand1 >>> shift;
-    5'd23: alu = operand2 - operand1; // operand2がレジスタに書き込んだりするrtに相当する
-	default: alu = 32'hffffffff;
+         5'd0: alu = operand1 + operand2;
+         5'd1: alu = operand1 - operand2;
+         5'd8: alu = operand1 & operand2;
+         5'd9: alu = operand1 | operand2;
+         5'd10: alu = operand1 ^ operand2;
+         5'd11: alu = ~ (operand1 & operand2);
+         5'd16: alu = operand1 << shift;
+         5'd17: alu = operand1 >> shift;
+         5'd18: alu = operand1 >>> shift;
+         5'd23: alu = operand2 - operand1; // operand2がレジスタに書き込んだりするrtに相当する
+         default: alu = 32'hffffffff;
       endcase
    endfunction
 
    function [31:0] calc;
       input [5:0]  op;
-      input [31:0] alu_result, dpl_imm, dm_r_data, pc; // ******** 修正行 ********
+      input [31:0] alu_result, dpl_imm, dm_r_data, pc;
       case (op)
-	6'd0, 6'd1, 6'd4, 6'd5, 6'd6, 6'd36: calc = alu_result;
-	6'd3: calc = dpl_imm << 16;
-	6'd16: calc = dm_r_data;
-	6'd18: calc = {{16{dm_r_data[15]}}, dm_r_data[15:0]};
-	6'd20: calc = {{24{dm_r_data[7]}}, dm_r_data[7:0]};
-	6'd41: calc = pc+32'd1;
-	default: calc = 32'hffffffff;
+         6'd0, 6'd1, 6'd4, 6'd5, 6'd6, 6'd36: calc = alu_result;
+         6'd3: calc = dpl_imm << 16;
+         6'd16: calc = dm_r_data;
+         6'd18: calc = {{16{dm_r_data[15]}}, dm_r_data[15:0]};
+         6'd20: calc = {{24{dm_r_data[7]}}, dm_r_data[7:0]};
+         6'd41: calc = pc+32'd1;
+         default: calc = 32'hffffffff;
       endcase
    endfunction
 
@@ -75,13 +69,13 @@ module execute (clk, ins, pc, reg1, reg2, wra, result, nextpc);
       input [5:0]  op;
       input [31:0] reg1, reg2, branch, nonbranch, addr;
       case (op)
-	6'd32: npc = (reg1 == reg2)? branch : nonbranch; // ******** 修正行 ********
-	6'd33: npc = (reg1 != reg2)? branch : nonbranch;
-	6'd34, 6'd36: npc = (reg1 < reg2)? branch : nonbranch;
-	6'd35: npc = (reg1 <= reg2)? branch : nonbranch;
-	6'd40, 6'd41: npc = addr;
-	6'd42: npc = reg1;
-	default: npc = nonbranch;
+         6'd32: npc = (reg1 == reg2)? branch : nonbranch;
+         6'd33: npc = (reg1 != reg2)? branch : nonbranch;
+         6'd34, 6'd36: npc = (reg1 < reg2)? branch : nonbranch;
+         6'd35: npc = (reg1 <= reg2)? branch : nonbranch;
+         6'd40, 6'd41: npc = addr;
+         6'd42: npc = reg1;
+         default: npc = nonbranch;
       endcase
    endfunction
 
@@ -127,7 +121,6 @@ module execute (clk, ins, pc, reg1, reg2, wra, result, nextpc);
    assign nonbranch = pc+32'd1;
    assign branch = nonbranch + dpl_imm;
    assign nextpc = npc(op, reg1, reg2, branch, nonbranch, addr);
-//    assign result = wra;
 endmodule
 
 module data_mem(address, clk, write_data, wren, read_data);
@@ -164,7 +157,7 @@ module reg_file(clk, rstd, wr, ra1, ra2, wa, wren, rr1, rr2);
    always @(negedge rstd or posedge clk) begin
      if (rstd == 0) rf [0] <= 32'h00000000;
      else if (wren == 0) rf[wa] <= wr;
-      $display("1:%d, 2:%d, 3:%d, wa: %d",rf[1], rf[2], rf[3], wa); // ******** 追加行 ********
+      $display("1:%d, 2:%d, 3:%d",rf[1], rf[2], rf[3]);
    end
 endmodule
 
@@ -178,6 +171,6 @@ module computer(clk, rstd);
    writeback writeback_body (clk, rstd, nextpc, pc);
    reg_file rf_body (clk, rstd, result, ins[25:21], ins[20:16], wra, (~| wra) , reg1, reg2);
    always @(negedge rstd or posedge clk) begin
-      $display("pc:%d, wra: %d", pc, wra); // ******** 追加行 ********
+      $display("pc:%d", pc);
    end
 endmodule
