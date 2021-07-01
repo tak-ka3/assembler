@@ -4,7 +4,7 @@ module fetch (pc, ins);
    reg [31:0] 	 ins_mem[0:255];
    assign ins = ins_mem[pc];
    initial
-     $readmemb("3-5-all_plus.bnr", ins_mem);
+     $readmemb("3-2-plus1.bnr", ins_mem);
 endmodule
 
 module execute (clk, ins, pc, reg1, reg2, wra, result, nextpc);
