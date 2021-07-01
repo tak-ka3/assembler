@@ -64,7 +64,7 @@ while ($line = <FH>) {
     elsif ($op eq "bne") {p_b(6,33); p_r2b($f2, $f3); p_b(16, $labels{$f4}-$i-1);print("\n");}
     elsif ($op eq "blt") {p_b(6,34); p_r2b($f2, $f3); p_b(16, $labels{$f4}-$i-1);print("\n");}
     elsif ($op eq "ble") {p_b(6,35); p_r2b($f2, $f3); p_b(16, $labels{$f4}-$i-1);print("\n");}
-    elsif ($op eq "bgt_sub") {p_b(6,36); p_r2b($f2, $f3); p_b(16, $labels{$f4}-$i-1);print("\n");}
+    elsif ($op eq "bgt0_sub") {p_b(6,36); p_r2b($f2, $f3); p_b(16, $labels{$f4}-$i-1);print("\n");}
     elsif ($op eq "j") {p_b(6,40); p_b(26, $labels{$f2});print("\n");}
     elsif ($op eq "jal"){p_b(6, 41); p_b(26, $labels{$f2});print("\n");}
     elsif ($op eq "jr"){p_b(6, 42); p_r3("r0", $f2, "r0"); p_b(11, 0);print("\n");}

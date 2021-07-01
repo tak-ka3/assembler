@@ -4,7 +4,7 @@ module fetch (pc, ins);
    reg [31:0] 	 ins_mem[0:255];
    assign ins = ins_mem[pc];
    initial
-     $readmemb("3-2-plus1.bnr", ins_mem);
+     $readmemb("3-5-all_plus.bnr", ins_mem);
 endmodule
 
 module execute (clk, ins, pc, reg1, reg2, wra, result, nextpc);
@@ -12,11 +12,11 @@ module execute (clk, ins, pc, reg1, reg2, wra, result, nextpc);
    input [31:0] ins, pc, reg1, reg2;
    output [4:0] wra; 
    output [31:0] result, nextpc;
-   wire [5:0] 	 op; 
-   wire [4:0] 	 shift, operation;
-   wire [25:0] 	 addr;
-   wire [31:0] 	 dpl_imm, operand2, alu_result, nonbranch, branch, mem_address, dm_r_data; 
-   wire [3:0] 	 wren;
+   wire [5:0] op; 
+   wire [4:0] shift, operation;
+   wire [25:0] addr;
+   wire [31:0] dpl_imm, operand2, alu_result, nonbranch, branch, mem_address, dm_r_data; 
+   wire [3:0] wren;
 
    // ALUで、何の演算を行うかを決める
    function [4:0] opr_gen;
